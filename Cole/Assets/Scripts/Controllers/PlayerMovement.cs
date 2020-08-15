@@ -1,38 +1,77 @@
 ﻿using UnityEngine;
-public enum Direction
+namespace Cole
 {
-    Down,
-    Up,
-    Left,
-    Right
-}
-public class PlayerMovement : MonoBehaviour
-{
-    public float speed = 5f;
-    private Direction lastDirection;
-    private Rigidbody2D rb;
-    private Animator anim;
-
-    Vector2 movement;
-
-    private void Start()
+    namespace Controllers
     {
-        rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-    }
+        public class PlayerMovement : MonoBehaviour
+        {
+            public float speed = 5f;
+            private Rigidbody2D rb;
+            private Animator anim;
+            [SerializeField]
+            private Transform swordContainer;
 
-    private void Update()
-    {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
-    }
+            [SerializeField] Transform swordUp, swordDown, swordLeft, swordRight;
 
-    private void FixedUpdate()
-    {
-        anim.SetFloat("Horizontal", movement.x);
-        anim.SetFloat("Vertical", movement.y);
-        anim.SetFloat("Speed", movement.sqrMagnitude);
+            Vector2 movement;
 
-        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
+            #region Singleton
+            public static PlayerMovement singleton;
+            private void Awake()
+            {
+                if (singleton == null)
+                {
+                    singleton = this;
+                }
+            }
+            #endregion
+
+            private void Start()
+            {
+                rb = GetComponent<Rigidbody2D>();
+                anim = GetComponent<Animator>();
+            }
+
+            private void Update()
+            {
+                movement.x = Input.GetAxisRaw("Horizontal");
+                movement.y = Input.GetAxisRaw("Vertical");
+            }
+
+            private void FixedUpdate()
+            {
+                anim.SetFloat("Horizontal", movement.x);
+                anim.SetFloat("Vertical", movement.y);
+                anim.SetFloat("Speed", movement.sqrMagnitude);
+
+                if (movement.y == -1f)
+                {
+                    UpdateSwordContainer(swordDown);
+                    anim.SetInteger("LastDirID", 0);
+                }
+                else if (movement.y == 1f)
+                {
+                    UpdateSwordContainer(swordUp);
+                    anim.SetInteger("LastDirID", 1);
+                }
+                else if (movement.x == -1f)
+                {
+                    UpdateSwordContainer(swordLeft);
+                    anim.SetInteger("LastDirID", 2);
+                }
+                else if (movement.x == 1f)
+                {
+                    UpdateSwordContainer(swordRight);
+                    anim.SetInteger("LastDirID", 3);
+                }
+
+                rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
+            }
+            void UpdateSwordContainer(Transform t)
+            {
+                swordContainer.position = t.position;
+                swordContainer.rotation = t.rotation;
+            }
+        }
     }
 }
