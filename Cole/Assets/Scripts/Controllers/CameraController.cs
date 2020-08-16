@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 namespace Cole
 {
     namespace Controllers
@@ -8,6 +10,7 @@ namespace Cole
         public class CameraController : MonoBehaviour
         {
             public Transform target;
+            public Camera cam;
 
             #region Singleton
             public static CameraController singleton;
@@ -23,7 +26,8 @@ namespace Cole
             // Start is called before the first frame update
             void Start()
             {
-
+                cam = GetComponent<Camera>();
+                transform.position = new Vector3(target.position.x + 0.5f, target.position.y - 0.5f, transform.position.z);
             }
 
             // Update is called once per frame
@@ -31,6 +35,7 @@ namespace Cole
             {
                 transform.position = new Vector3(target.position.x + 0.5f, target.position.y - 0.5f, transform.position.z);
             }
+
         }
     }
 }

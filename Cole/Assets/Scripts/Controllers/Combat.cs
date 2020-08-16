@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Cole.Managers;
+using System.Collections;
 using UnityEngine;
 namespace Cole
 {
@@ -6,37 +7,44 @@ namespace Cole
     {
         public class Combat : MonoBehaviour
         {
-            Animator anim;
+            //References
             [SerializeField] GameObject gfx;
             [SerializeField] Transform swordPoint;
             [SerializeField] Vector3 colliderBox;
-            bool canAttack = true;
+
+            Rigidbody2D rb;
+            Vector2 mousePos;
+
+            public bool canAttack = true;
 
             private void Start()
             {
-                anim = GetComponent<Animator>();      
+                rb = GetComponent<Rigidbody2D>();
             }
             private void Update()
             {
-                if (Input.GetKeyDown(KeyCode.Mouse0) && canAttack)
+                if (GameManager.singleton.playerUI.isPaused)
                 {
-                    StartCoroutine(AttackPointer());
+                    return;
+                }
+
+                Transform target = GameManager.singleton.movement.transform;
+                transform.position = new Vector3(target.position.x + 0.477f, target.position.y + -0.497f, target.position.z - -0.0112f);
+                if (canAttack)
+                {
+                    //Attack();
+                    mousePos = GameManager.singleton.cameraController.cam.ScreenToWorldPoint(Input.mousePosition);
+                    Vector2 lookDir = mousePos - GameManager.singleton.movement.rb.position;
+                    float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+                    rb.rotation = angle;
                 }
             }
-            IEnumerator AttackPointer()
+            private void FixedUpdate()
             {
-                Attack();
-                yield return new WaitForSeconds(0.5f);
-                canAttack = true;
-                anim.SetBool("Swing", false);
-                gfx.SetActive(false);
+                
             }
             void Attack()
             {
-                canAttack = false;
-                anim.SetBool("Swing", true);
-                gfx.SetActive(true);
-
                 Collider2D[] EnemyColls = Physics2D.OverlapBoxAll(swordPoint.position, colliderBox, LayerMask.NameToLayer("Enemy"));
                 foreach (Collider2D enemy in EnemyColls)
                 {

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Cole.Managers;
+using UnityEngine;
 namespace Cole
 {
     namespace Controllers
@@ -6,12 +7,9 @@ namespace Cole
         public class PlayerMovement : MonoBehaviour
         {
             public float speed = 5f;
-            private Rigidbody2D rb;
+            [HideInInspector]
+            public Rigidbody2D rb;
             private Animator anim;
-            [SerializeField]
-            private Transform swordContainer;
-
-            [SerializeField] Transform swordUp, swordDown, swordLeft, swordRight;
 
             Vector2 movement;
 
@@ -40,37 +38,33 @@ namespace Cole
 
             private void FixedUpdate()
             {
+                if (GameManager.singleton.playerUI.isPaused)
+                {
+                    return;
+                }
+
                 anim.SetFloat("Horizontal", movement.x);
                 anim.SetFloat("Vertical", movement.y);
                 anim.SetFloat("Speed", movement.sqrMagnitude);
 
                 if (movement.y == -1f)
                 {
-                    UpdateSwordContainer(swordDown);
                     anim.SetInteger("LastDirID", 0);
                 }
                 else if (movement.y == 1f)
                 {
-                    UpdateSwordContainer(swordUp);
                     anim.SetInteger("LastDirID", 1);
                 }
                 else if (movement.x == -1f)
                 {
-                    UpdateSwordContainer(swordLeft);
                     anim.SetInteger("LastDirID", 2);
                 }
                 else if (movement.x == 1f)
                 {
-                    UpdateSwordContainer(swordRight);
                     anim.SetInteger("LastDirID", 3);
                 }
 
                 rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
-            }
-            void UpdateSwordContainer(Transform t)
-            {
-                swordContainer.position = t.position;
-                swordContainer.rotation = t.rotation;
             }
         }
     }

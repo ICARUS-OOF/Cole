@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using Cole.Controllers;
 namespace Cole
 {
@@ -19,16 +20,27 @@ namespace Cole
 			#region References
 			public PlayerMovement movement;
 			public CameraController cameraController;
+			public PlayerUI playerUI;
 			#endregion
 			#region Methods
 			private void Start()
 			{
-
+				SceneManager.sceneLoaded += OnSceneLoaded;
+				movement = PlayerMovement.singleton;
+				cameraController = CameraController.singleton;
+				playerUI = PlayerUI.singleton;
 			}
 			private void Update()
 			{
 				movement = PlayerMovement.singleton;
 				cameraController = CameraController.singleton;
+				playerUI = PlayerUI.singleton;
+			}
+			void OnSceneLoaded(Scene _scene, LoadSceneMode mode)
+			{
+				movement = PlayerMovement.singleton;
+				cameraController = CameraController.singleton;
+				playerUI = PlayerUI.singleton;
 			}
 			#endregion
 		}
