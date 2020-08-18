@@ -1,28 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class PlayerController : MonoBehaviour
+namespace Cole
 {
-    public PlayerPhysics controller;
-
-    public float runSpeed = 40f;
-
-    float horizontalMove = 0f;
-    bool jump = false;
-
-    private void Update()
+    namespace Controllers
     {
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
-    
-        if (Input.GetButtonDown("Jump"))
+        public class PlayerController : MonoBehaviour
         {
-            jump = true;
+            public static PlayerController singleton;
+
+            public float runSpeed = 40f;
+
+            float horizontalMove = 0f;
+            bool jump = false;
+
+            private void Awake()
+            {
+                if (singleton == null)
+                {
+                    singleton = this;
+                }
+            }
+
+            private void Update()
+            {
+                horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+
+                if (Input.GetButtonDown("Jump"))
+                {
+                    jump = true;
+                }
+            }
+            private void FixedUpdate()
+            {
+                PlayerPhysics.singleton.Move(horizontalMove * Time.fixedDeltaTime, false, jump);
+                jump = false;
+            }
         }
-    }
-    private void FixedUpdate()
-    {
-        controller.Move(horizontalMove * Time.fixedDeltaTime, false, jump);
-        jump = false;
     }
 }
