@@ -18,8 +18,12 @@ namespace Cole
             {
                 Vector3 camPos = CameraController.singleton.transform.position;
                 float dist = (camPos.x * parallaxEffect);
+                float temp = (camPos.x * (1 - parallaxEffect));
 
                 transform.position = new Vector3(startPos + dist, transform.position.y, transform.position.z);
+
+                if (temp > startPos + length) startPos += length;
+                else if (temp < startPos - length) startPos -= length;
             }
         } 
     } 

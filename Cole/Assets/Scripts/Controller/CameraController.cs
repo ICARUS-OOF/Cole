@@ -19,7 +19,8 @@ namespace Cole
             private void LateUpdate()
             {
                 Vector3 targetPos = PlayerController.singleton.transform.position;
-                transform.position = Vector3.Lerp(transform.position, new Vector3(targetPos.x, targetPos.y, transform.position.z), Time.deltaTime * 10f);
+                //transform.position = Vector3.Lerp(transform.position, new Vector3(targetPos.x, targetPos.y, transform.position.z), Time.deltaTime * 10f);
+                transform.position = new Vector3(targetPos.x, targetPos.y, transform.position.z);
             }
         }
     }
