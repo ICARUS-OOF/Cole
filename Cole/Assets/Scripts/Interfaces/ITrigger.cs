@@ -1,5 +1,11 @@
 ﻿using UnityEngine;
-public interface ITrigger
+namespace Cole
 {
-    void OnTrigger();
+    namespace Interfaces
+    {
+        public interface ITrigger
+        {
+            void Trigger();
+        }
+    }
 }
